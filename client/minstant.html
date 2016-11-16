@@ -1,0 +1,132 @@
+<head>
+  <title>minstant</title>
+</head>
+
+<body>
+</body>
+
+<!-- this is the main template used by iron:router to build the page -->
+<template name="ApplicationLayout">
+	{{> yield "header"}}
+	
+	<div class="container">
+	{{> yield "main"}}
+	</div>
+</template>
+
+<!-- top level template for the nav bar -->
+<template name="navbar">
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/">
+        Minstant!
+      </a>
+    </div>
+    <div class="nav navbar-nav">
+    {{> loginButtons}}
+</div>
+  </div>
+</nav>
+</template>
+
+<!-- Top level template for the lobby page -->
+<template name="lobby_page">
+	{{> available_user_list}}
+</template>
+
+<!-- display a list of users -->
+<template name="available_user_list">
+	<h2>Choose someone to chat with:</h2>
+	<div class="row">
+	{{#each users}}
+	{{> available_user}}
+	{{/each}}
+</div>
+</template>
+
+<!-- display an individual user -->
+<template name="available_user">
+	<div class="col-md-2">
+		<div class="user_avatar">
+			{{#if isMyUser _id}} 
+			<div class="bg-success">{{getUserName _id}} (YOU)
+				<br/>
+				<img src="/{{profile.avatar}}" class="avatar_img">			
+			</div>
+			{{else}}
+			<a href="/chat/{{_id}}">
+				{{getUserName _id}}
+				<br/>
+				<img src="/{{profile.avatar}}" class="avatar_img">
+			</a>
+			{{/if}}
+		</div>
+	</div>
+</template>
+
+
+<!-- Top level template for the chat page -->
+<template name="chat_page">
+	<h2>Your chat with <i>{{getOtherName}}</i></h2>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="well well-lg">
+			{{#each messages}}
+			{{> chat_message}}
+			{{/each}}
+			</div>	
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<form class="js-send-chat">
+				<input class="input send_chat_input" type="text" name="chat" placeholder="type a message here...">
+				<button class="btn btn-success">send</button>
+			</form>
+			<p><i>* You can add emoticons by typing any of the following <a target="_blank" href="http://emoji.codes/">codes</a>.</i></p>
+		</div>
+	</div>
+</template>
+
+<!-- simple template that displays a message -->
+<template name="chat_message">
+	{{#if isMyUser userId}}
+	<div class="row">
+		<div class="col-md-2 col-xs-3">
+			<img src="/{{getUserAvatar userId}}" class="avatar_img" />
+		</div>
+		<div class="col-md-7 col-xs-9">
+			<div>
+				<div class="panel panel-primary">
+					<div class="panel-heading"><b>{{getUserName userId}}</b></div>
+					<div class="panel-body">
+						<p><i>{{#emojione}}{{text}}{{/emojione}}</i></p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-3 col-xs-0">
+		</div>
+	</div>
+	{{else}}
+	<div class="row">
+		<div class="col-md-3 col-xs-0">
+		</div>
+		<div class="col-md-7 col-xs-9">
+			<div>
+				<div class="panel panel-warning">
+					<div class="panel-heading"><b>{{getUserName userId}}</b></div>
+					<div class="panel-body">
+						<p><i>{{#emojione}}{{text}}{{/emojione}}</i></p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-2 col-xs-3">
+			<img src="/{{getUserAvatar userId}}" class="avatar_img" />
+		</div>
+	</div>
+	{{/if}}
+</template>
+
